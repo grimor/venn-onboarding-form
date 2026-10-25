@@ -9,20 +9,28 @@ import { getErrorMessages } from "../utils/getErrorMessages";
 
 import styles from "./TextField.module.css";
 
+/** Properties of the text field. Also accepts all `Input` properties, but not `name` and the value properties. */
 type TextFieldProps = Omit<
   InputProps,
   "name" | "value" | "defaultValue" | "onValueChange"
 > & {
+  /** The label of the field. */
   label: ReactNode;
+  /** Help text that shows below the field. */
   description?: ReactNode;
+  /** The text that shows while the field checks its value. */
   validatingLabel?: ReactNode;
   /**
-   * Transforms the raw input value before it is stored in the field,
-   * e.g. to strip disallowed characters.
+   * Changes the input value before the field keeps it. For example, use it
+   * to remove characters that are not permitted.
    */
   parseValue?: (value: string) => string;
 };
 
+/**
+ * A text field of the form. It shows a label, error messages, and a status
+ * while it checks the value. Use it in `form.AppField`.
+ */
 export function TextField({
   label,
   description,
