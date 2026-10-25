@@ -69,7 +69,7 @@ async function request<TSchema extends z.ZodType>(
     method,
     signal: signal
       ? AbortSignal.any([signal, AbortSignal.timeout(10_000)])
-      : null,
+      : AbortSignal.timeout(10_000),
     headers: {
       Accept: "application/json",
       ...(hasBody && { "Content-Type": "application/json" }),

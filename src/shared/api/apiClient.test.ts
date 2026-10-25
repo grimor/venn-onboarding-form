@@ -39,13 +39,23 @@ describe("apiClient", () => {
     });
   });
 
-  it("does not attach a signal when none is given", async () => {
+  it("aborts the request after a 10 second timeout when no signal is given", async () => {
+    const timeoutController = new AbortController();
+    const timeoutSpy = vi
+      .spyOn(AbortSignal, "timeout")
+      .mockReturnValue(timeoutController.signal);
     const fetchMock = mockFetch({});
 
-    await apiClient.get("/things", z.unknown());
+    await apiClient.post("/things", {}, z.unknown());
 
-    const [, init] = fetchMock.mock.calls[0] ?? [];
-    expect(init?.signal).toBeNull();
+    expect(timeoutSpy).toHaveBeenCalledWith(10_000);
+    const signal = fetchMock.mock.calls[0]?.[1]?.signal;
+    expect(signal?.aborted).toBe(false);
+
+    timeoutController.abort(new DOMException("timed out", "TimeoutError"));
+
+    expect(signal?.aborted).toBe(true);
+    expect(signal?.reason).toMatchObject({ name: "TimeoutError" });
   });
 
   it("aborts the request when the caller's signal aborts", async () => {
