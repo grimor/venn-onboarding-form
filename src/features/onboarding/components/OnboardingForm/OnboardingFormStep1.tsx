@@ -13,9 +13,11 @@ import styles from "./OnboardingForm.module.css";
 
 const { shape } = onboardingStep1Schema;
 
-type Step1SubmitHandler = (value: OnboardingStep1Values) => void;
+type Step1SubmitHandler = (
+  value: OnboardingStep1Values,
+) => Promise<void> | void;
 
-const defaultSubmitHandler: Step1SubmitHandler = () => {};
+const defaultSubmitHandler: Step1SubmitHandler = () => undefined;
 
 export const OnboardingFormStep1 = withForm({
   ...onboardingFormOptions,

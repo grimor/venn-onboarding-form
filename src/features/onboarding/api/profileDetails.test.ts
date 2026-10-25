@@ -21,7 +21,9 @@ describe("submitProfileDetails", () => {
     const [url, init] = fetchMock.mock.calls[0] ?? [];
     expect(url).toBe(`${env.apiBaseUrl}/profile-details`);
     expect(init?.method).toBe("POST");
-    expect(JSON.parse(String(init?.body))).toEqual(values);
+    const body = init?.body;
+    expect(typeof body).toBe("string");
+    expect(JSON.parse(body as string)).toEqual(values);
   });
 
   it("throws ApiError with the server message on 400", async () => {
