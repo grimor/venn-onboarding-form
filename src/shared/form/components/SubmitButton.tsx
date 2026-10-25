@@ -1,13 +1,12 @@
-import type { ReactNode } from "react";
+import type { PropsWithChildren, ReactNode } from "react";
 import { useSelector } from "@tanstack/react-form";
 import { Button, type ButtonProps } from "../../ui/Button";
 import { useFormContext } from "../formContext";
 
 type SubmitButtonProps = Omit<ButtonProps, "type"> & {
-  children?: ReactNode;
   pendingLabel?: ReactNode;
   isSubmitting?: boolean;
-};
+} & PropsWithChildren;
 
 export function SubmitButton({
   children = "Submit",

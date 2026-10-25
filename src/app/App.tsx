@@ -1,12 +1,17 @@
+import { QueryClientProvider } from "@tanstack/react-query";
+
 import { OnboardingPage } from "../features/onboarding/components/OnboardingPage";
+import { queryClient } from "./queryClient";
 
 import styles from "./App.module.css";
 
 function App() {
   return (
-    <div className={styles.App}>
-      <OnboardingPage />
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <div className={styles.App}>
+        <OnboardingPage />
+      </div>
+    </QueryClientProvider>
   );
 }
 

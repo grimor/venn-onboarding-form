@@ -1,5 +1,8 @@
 import type { StandardSchemaV1Issue } from "@tanstack/react-form";
 
+/**
+ * Check if error is Tanstack Form issue format
+ */
 function isIssue(error: unknown): error is StandardSchemaV1Issue {
   return (
     typeof error === "object" &&

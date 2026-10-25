@@ -33,10 +33,10 @@ const weightClass: Record<TextWeight, string | undefined> = {
 };
 
 const colorClass: Record<TextColor, string | undefined> = {
-  default: styles.toneDefault,
-  muted: styles.toneMuted,
-  error: styles.toneError,
-  inherit: styles.toneInherit,
+  default: styles.colorDefault,
+  muted: styles.colorMuted,
+  error: styles.colorError,
+  inherit: styles.colorInherit,
 };
 
 export function Text<E extends ElementType = "p">({

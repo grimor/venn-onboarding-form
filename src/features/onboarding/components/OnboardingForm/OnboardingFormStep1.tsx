@@ -1,6 +1,8 @@
 import type { SubmitEvent } from "react";
 
+import { FormError } from "../../../../shared/form/components";
 import { withForm } from "../../../../shared/form/useAppForm";
+import { useCorporationNumberValidator } from "../../hooks/useCorporationNumberValidator";
 import { onboardingFormOptions } from "../../model/onboardingFormOptions";
 import {
   onboardingStep1Schema,
@@ -11,9 +13,7 @@ import styles from "./OnboardingForm.module.css";
 
 const { shape } = onboardingStep1Schema;
 
-type Step1SubmitHandler = (
-  value: OnboardingStep1Values,
-) => void | Promise<void>;
+type Step1SubmitHandler = (value: OnboardingStep1Values) => void;
 
 const defaultSubmitHandler: Step1SubmitHandler = () => {};
 
@@ -21,8 +21,11 @@ export const OnboardingFormStep1 = withForm({
   ...onboardingFormOptions,
   props: {
     onSubmit: defaultSubmitHandler,
+    submitError: undefined as string | undefined,
   },
-  render: function Render({ form, onSubmit }) {
+  render: function Render({ form, onSubmit, submitError }) {
+    const validateCorporationNumber = useCorporationNumberValidator();
+
     return (
       <form.FormGroup
         name="step1"
@@ -75,23 +78,37 @@ export const OnboardingFormStep1 = withForm({
                     label="Phone Number"
                     type="tel"
                     autoComplete="tel"
-                    placeholder="+1"
                   />
                 )}
               </form.AppField>
 
               <form.AppField
                 name="step1.corporationNumber"
-                validators={{ onBlur: shape.corporationNumber }}
+                validators={{
+                  onBlur: shape.corporationNumber,
+                  onBlurAsync: ({ value, signal, fieldApi }) => {
+                    // TODO: Workaround for this issue https://github.com/TanStack/form/issues/2372
+                    fieldApi.timeoutIds.validations.blur = null;
+
+                    return validateCorporationNumber({
+                      value,
+                      signal,
+                      getCurrentValue: () => fieldApi.state.value,
+                    });
+                  },
+                }}
               >
                 {(field) => (
                   <field.TextField
                     label="Corporation Number"
                     inputMode="numeric"
                     maxLength={9}
+                    validatingLabel="Checking corporation number…"
                   />
                 )}
               </form.AppField>
+
+              <FormError>{submitError}</FormError>
 
               <form.AppForm>
                 <form.SubmitButton isSubmitting={group.state.meta.isSubmitting}>

@@ -6,10 +6,29 @@ A multi-step onboarding form built with React, TypeScript and Vite.
 
 Requires Node `>=22.13.0` (see `.nvmrc`).
 
+Before running, rename `.env.example` to `.env` and set `VITE_API_BASE_URL`
+to the API's base URL (see [Environment](#environment)):
+
+```bash
+mv .env.example .env
+```
+
+Then install and start the dev server:
+
 ```bash
 npm install
 npm run dev
 ```
+
+## Environment
+
+Config is read from `.env`.
+
+| Variable            | Description                    |
+| ------------------- | ------------------------------ |
+| `VITE_API_BASE_URL` | Base URL of the onboarding API |
+
+`VITE_*` variables are embedded in the client bundle, so never put secrets there.
 
 ## Scripts
 

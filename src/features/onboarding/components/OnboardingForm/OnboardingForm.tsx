@@ -7,11 +7,17 @@ interface OnboardingFormProps {
 }
 
 export function OnboardingForm({ step, onStepSuccess }: OnboardingFormProps) {
-  const { form, submitStep1 } = useOnboardingForm({ onStepSuccess });
+  const { form, submitStep1, step1SubmitError } = useOnboardingForm({ onStepSuccess });
 
   return (
     <>
-      {step === 0 && <OnboardingFormStep1 form={form} onSubmit={submitStep1} />}
+      {step === 0 && (
+        <OnboardingFormStep1
+          form={form}
+          onSubmit={submitStep1}
+          submitError={step1SubmitError}
+        />
+      )}
     </>
   );
 }
