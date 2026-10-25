@@ -111,6 +111,15 @@ describe("OnboardingPage", () => {
     expect(input.value).toBe("+13062776103");
   });
 
+  it("allows only digits in the corporation number", async () => {
+    const user = renderPage();
+    const input = screen.getByLabelText<HTMLInputElement>("Corporation Number");
+
+    await user.type(input, "8a2-6 4.1#7395");
+
+    expect(input.value).toBe(VALID_CORPORATION_NUMBER);
+  });
+
   it("blocks submission when the API rejects the corporation number", async () => {
     const user = renderPage();
 

@@ -8,9 +8,9 @@ import styles from "./App.module.css";
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <div className={styles.App}>
+      <main className={styles.App}>
         <OnboardingPage />
-      </div>
+      </main>
     </QueryClientProvider>
   );
 }

@@ -8,6 +8,7 @@ import {
   onboardingStep1Schema,
   type OnboardingStep1Values,
 } from "../../model/onboardingSchema";
+import { sanitizeCorporationNumber } from "../../model/sanitizeCorporationNumber";
 import { sanitizePhone } from "../../model/sanitizePhone";
 
 import styles from "./OnboardingForm.module.css";
@@ -55,7 +56,7 @@ export const OnboardingFormStep1 = withForm({
                     <field.TextField
                       label="First Name"
                       autoComplete="given-name"
-                      maxLength={50}
+                      required
                     />
                   )}
                 </form.AppField>
@@ -68,7 +69,7 @@ export const OnboardingFormStep1 = withForm({
                     <field.TextField
                       label="Last Name"
                       autoComplete="family-name"
-                      maxLength={50}
+                      required
                     />
                   )}
                 </form.AppField>
@@ -84,6 +85,7 @@ export const OnboardingFormStep1 = withForm({
                     type="tel"
                     autoComplete="tel"
                     parseValue={sanitizePhone}
+                    required
                   />
                 )}
               </form.AppField>
@@ -108,8 +110,9 @@ export const OnboardingFormStep1 = withForm({
                   <field.TextField
                     label="Corporation Number"
                     inputMode="numeric"
-                    maxLength={9}
                     validatingLabel="Checking corporation number…"
+                    parseValue={sanitizeCorporationNumber}
+                    required
                   />
                 )}
               </form.AppField>

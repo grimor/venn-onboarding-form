@@ -67,7 +67,9 @@ async function request<TSchema extends z.ZodType>(
 
   const response = await fetch(`${env.apiBaseUrl}${path}`, {
     method,
-    signal,
+    signal: signal
+      ? AbortSignal.any([signal, AbortSignal.timeout(10_000)])
+      : null,
     headers: {
       Accept: "application/json",
       ...(hasBody && { "Content-Type": "application/json" }),

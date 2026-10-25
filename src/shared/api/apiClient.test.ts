@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import z from "zod";
 
 import { ApiError, apiClient, getApiErrorMessage } from "./apiClient";
@@ -6,6 +6,10 @@ import { env } from "../config/env";
 import { mockFetch } from "../../test/mockFetch";
 
 describe("apiClient", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it("GETs a path relative to the base URL and validates the response", async () => {
     const fetchMock = mockFetch({ id: 1 });
 
@@ -33,6 +37,53 @@ describe("apiClient", () => {
     expect(init?.headers).toMatchObject({
       "Content-Type": "application/json",
     });
+  });
+
+  it("does not attach a signal when none is given", async () => {
+    const fetchMock = mockFetch({});
+
+    await apiClient.get("/things", z.unknown());
+
+    const [, init] = fetchMock.mock.calls[0] ?? [];
+    expect(init?.signal).toBeNull();
+  });
+
+  it("aborts the request when the caller's signal aborts", async () => {
+    const fetchMock = mockFetch({});
+    const controller = new AbortController();
+
+    await apiClient.get("/things", z.unknown(), { signal: controller.signal });
+
+    const signal = fetchMock.mock.calls[0]?.[1]?.signal;
+    expect(signal).toBeInstanceOf(AbortSignal);
+    expect(signal?.aborted).toBe(false);
+
+    const reason = new Error("cancelled");
+    controller.abort(reason);
+
+    expect(signal?.aborted).toBe(true);
+    expect(signal?.reason).toBe(reason);
+  });
+
+  it("aborts the request after a 10 second timeout", async () => {
+    const timeoutController = new AbortController();
+    const timeoutSpy = vi
+      .spyOn(AbortSignal, "timeout")
+      .mockReturnValue(timeoutController.signal);
+    const fetchMock = mockFetch({});
+
+    await apiClient.get("/things", z.unknown(), {
+      signal: new AbortController().signal,
+    });
+
+    expect(timeoutSpy).toHaveBeenCalledWith(10_000);
+    const signal = fetchMock.mock.calls[0]?.[1]?.signal;
+    expect(signal?.aborted).toBe(false);
+
+    timeoutController.abort(new DOMException("timed out", "TimeoutError"));
+
+    expect(signal?.aborted).toBe(true);
+    expect(signal?.reason).toMatchObject({ name: "TimeoutError" });
   });
 
   it("throws ApiError with the server message for non-2xx responses", async () => {
