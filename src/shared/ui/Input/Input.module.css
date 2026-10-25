@@ -1,0 +1,30 @@
+.Input {
+  box-sizing: border-box;
+  padding: 0 var(--space-4);
+  margin: 0;
+  border-radius: var(--radius-md);
+  border: var(--border-width-thin) solid var(--color-border-input);
+  outline: 0;
+  width: 100%;
+  height: var(--space-12);
+  font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 400;
+  background-color: white;
+  color: var(--color-text-primary);
+
+  @media (any-pointer: coarse) {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+
+  &::placeholder {
+    color: var(--color-text-secondary);
+  }
+
+  &:focus {
+    outline: var(--focus-outline);
+    outline-offset: -1;
+  }
+}

@@ -1,0 +1,121 @@
+:root {
+  /* ---------- Colors: base palette ---------- */
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-gray-50: #f4f4f4;
+  --color-gray-200: #e5e5e5;
+  --color-gray-300: #d9d9d9;
+  --color-gray-500: #8c8c8c;
+  --color-gray-700: #333333;
+  --color-gray-800: #1f1f1f;
+  --color-red-500: #ff0000;
+
+  /* ---------- Colors: semantic ---------- */
+  --color-bg-page: var(--color-gray-50);
+  --color-bg-surface: var(--color-white);
+  --color-bg-input: var(--color-white);
+
+  --color-text-primary: var(--color-black);
+  --color-text-secondary: var(--color-gray-500);
+  --color-text-inverse: var(--color-white);
+  --color-text-error: var(--color-red-500);
+
+  --color-border-surface: var(--color-gray-200);
+  --color-border-input: var(--color-gray-300);
+  --color-border-input-focus: var(--color-black);
+  --color-border-input-error: var(--color-red-500);
+
+  /* Button – primary: default */
+  --color-button-primary-bg: var(--color-black);
+  --color-button-primary-text: var(--color-white);
+
+  /* Button – primary: hover */
+  --color-button-primary-bg-hover: var(--color-gray-800);
+  --color-button-primary-text-hover: var(--color-white);
+
+  /* Button – primary: active (pressed) */
+  --color-button-primary-bg-active: var(--color-gray-700);
+  --color-button-primary-text-active: var(--color-white);
+
+  /* Button – primary: disabled */
+  --color-button-primary-bg-disabled: var(--color-gray-300);
+  --color-button-primary-text-disabled: var(--color-gray-500);
+
+  /* ---------- Typography ---------- */
+  --font-family-base:
+    "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+
+  --font-size-xs: 0.75rem; /* 12px – error messages */
+  --font-size-sm: 0.8125rem; /* 13px – field labels */
+  --font-size-md: 0.9375rem; /* 15px – inputs, button */
+  --font-size-lg: 1.125rem; /* 18px – step indicator */
+  --font-size-xl: 1.5rem; /* 24px – form title */
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+
+  --line-height-tight: 1.2;
+  --line-height-base: 1.5;
+
+  /* ---------- Spacing (4px scale) ---------- */
+  --space-1: 0.25rem; /* 4px */
+  --space-2: 0.5rem; /* 8px */
+  --space-3: 0.75rem; /* 12px */
+  --space-4: 1rem; /* 16px */
+  --space-5: 1.25rem; /* 20px */
+  --space-6: 1.5rem; /* 24px */
+  --space-7: 1.75rem; /* 28px */
+  --space-8: 2rem; /* 32px */
+  --space-12: 3rem; /* 48px */
+  --space-24: 6rem; /* 96px */
+
+  /* ---------- Radii ---------- */
+  --radius-sm: 0.5rem; /* 8px – button */
+  --radius-md: 0.625rem; /* 10px – inputs */
+  --radius-lg: 1rem; /* 16px – card */
+
+  /* ---------- Borders ---------- */
+  --border-width-thin: 1px;
+
+  /* ---------- Sizing ---------- */
+  --size-card-max-width: 33rem; /* ~528px */
+  --size-input-height: 2.875rem; /* 46px */
+  --size-button-height: 2.875rem; /* 46px */
+  --size-icon-sm: 1rem; /* 16px – arrow icon */
+
+  /* ---------- Effects ---------- */
+  --focus-outline-width: 2px;
+  --focus-outline-style: solid;
+  --focus-outline-color: var(--color-black);
+  --focus-outline-offset: 2px;
+  --focus-outline: var(--focus-outline-width) var(--focus-outline-style)
+    var(--focus-outline-color);
+  --opacity-disabled: 0.6;
+
+  /* ---------- Motion ---------- */
+  --transition-duration-fast: 150ms;
+  --transition-easing-standard: ease-in-out;
+
+  font: 18px/145% var(--font-family-base);
+  color: var(--color-text-primary);
+  background: var(--color-bg-page);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  @media (max-width: 1024px) {
+    font-size: 16px;
+  }
+}
+
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+}
