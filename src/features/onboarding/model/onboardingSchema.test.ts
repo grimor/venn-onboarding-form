@@ -42,6 +42,20 @@ describe("onboardingStep1Schema", () => {
     ]);
   });
 
+  it("doesn't count surrounding whitespace towards the name limit", () => {
+    expect(getErrors({ firstName: ` ${"a".repeat(50)} ` })).toEqual([]);
+  });
+
+  it("trims the parsed values", () => {
+    expect(
+      onboardingStep1Schema.parse({
+        ...validValues,
+        firstName: "  Hello ",
+        lastName: "\tWorld\n",
+      }),
+    ).toEqual(validValues);
+  });
+
   it.each(["+447911123456", "13062776103", "+1 306 277 6103", "+1306277610"])(
     "rejects phone number %s",
     (phone) => {

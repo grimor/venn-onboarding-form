@@ -1,7 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
 
 import { onboardingFormOptions } from "../model/onboardingFormOptions";
-import type { OnboardingStep1Values } from "../model/onboardingSchema";
+import {
+  onboardingStep1Schema,
+  type OnboardingStep1Values,
+} from "../model/onboardingSchema";
 import { profileDetailsMutationOptions } from "../api/profileDetails";
 import { useAppForm } from "../../../shared/form/useAppForm";
 import { getApiErrorMessage } from "../../../shared/api";
@@ -11,9 +14,6 @@ export function useOnboardingForm({
 }: { onStepChange?: (step: number) => void } = {}) {
   const form = useAppForm({
     ...onboardingFormOptions,
-    onSubmit: ({ value }) => {
-      console.log("Submitted: ", value);
-    },
   });
 
   const profileDetailsMutation = useMutation({
@@ -25,7 +25,9 @@ export function useOnboardingForm({
 
   const submitStep1 = async (value: OnboardingStep1Values) => {
     try {
-      await profileDetailsMutation.mutateAsync(value);
+      await profileDetailsMutation.mutateAsync(
+        onboardingStep1Schema.parse(value),
+      );
     } catch {
       // Already exposed via `step1SubmitError` below.
     }

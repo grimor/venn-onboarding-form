@@ -116,6 +116,20 @@ describe("OnboardingPage", () => {
     expect(submittedBody).toEqual(validValues);
   });
 
+  it("submits names without surrounding whitespace", async () => {
+    const user = renderPage();
+
+    await fillStep1(user, {
+      ...validValues,
+      firstName: "  Hello ",
+      lastName: " World  ",
+    });
+    await user.click(screen.getByRole("button", { name: /submit/i }));
+
+    expect(await screen.findByText("Step 2 of 5")).toBeTruthy();
+    expect(submittedBody).toEqual(validValues);
+  });
+
   it("shows field errors on blur for invalid input", async () => {
     const user = renderPage();
 
@@ -224,6 +238,45 @@ describe("OnboardingPage", () => {
     await waitForSubmitToFinish();
 
     expect(await findFieldError("Corporation Number")).toBe(unverified);
+    expect(screen.getByText("Step 1 of 5")).toBeTruthy();
+    expect(submittedBody).toBeUndefined();
+  });
+
+  it("doesn't submit a corporation number edited while it's being checked", async () => {
+    let releaseCheck: () => void = () => undefined;
+    const checkReleased = new Promise<void>((resolve) => {
+      releaseCheck = resolve;
+    });
+    server.use(
+      http.get(
+        `${env.apiBaseUrl}/corporation-number/:number`,
+        async ({ params: { number } }) => {
+          checkedCorporationNumbers.push(String(number));
+          await checkReleased;
+          return HttpResponse.json({ corporationNumber: number, valid: true });
+        },
+      ),
+    );
+    const user = renderPage();
+    const corporationNumberInput = screen.getByLabelText("Corporation Number");
+
+    await user.type(screen.getByLabelText("First Name"), validValues.firstName);
+    await user.type(screen.getByLabelText("Last Name"), validValues.lastName);
+    await user.type(screen.getByLabelText("Phone Number"), validValues.phone);
+    await user.type(corporationNumberInput, VALID_CORPORATION_NUMBER);
+    await user.click(screen.getByRole("button", { name: /submit/i }));
+    await waitFor(() => {
+      expect(checkedCorporationNumbers).toEqual([VALID_CORPORATION_NUMBER]);
+    });
+
+    await user.clear(corporationNumberInput);
+    await user.type(corporationNumberInput, "12");
+    releaseCheck();
+    await waitForSubmitToFinish();
+
+    expect(await findFieldError("Corporation Number")).toBe(
+      "Corporation number must be 9 digits",
+    );
     expect(screen.getByText("Step 1 of 5")).toBeTruthy();
     expect(submittedBody).toBeUndefined();
   });

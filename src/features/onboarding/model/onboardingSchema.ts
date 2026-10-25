@@ -2,9 +2,11 @@ import z from "zod";
 
 const NAME_MAX_LENGTH = 50;
 
-// Validates without trimming, so what passes is exactly what gets submitted.
+// Trims before the checks, so the limits apply to what gets submitted.
+// Field validators only read the issues, so the submitted payload must be
+// parsed through the schema to get the trimmed output.
 const requiredString = (label: string) =>
-  z.string().refine((value) => value.trim() !== "", {
+  z.string().trim().refine((value) => value !== "", {
     error: `${label} is required`,
     // Skip format checks on an empty value, so only "required" is shown.
     abort: true,
@@ -20,6 +22,9 @@ export const onboardingStep1Schema = z.object({
   lastName: name("Last name"),
   // Only the Canadian country code is checked here, the full number is
   // validated by the API on submit.
+  // If better client validation is needed, should use `libphonenumber-js`
+  // library for best accuracy. Reason for not doing that, it would
+  // increase bundle size significantly.
   phone: requiredString("Phone number").regex(/^\+1\d{10}$/, {
     error: "Phone number must start with +1 followed by 10 digits",
   }),

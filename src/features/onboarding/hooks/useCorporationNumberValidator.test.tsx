@@ -104,30 +104,85 @@ describe("useCorporationNumberValidator", () => {
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
-  it("drops the result for a value the user has since changed", async () => {
-    const { respond } = mockPendingFetch();
+  it("checks the edited value when the user changes it mid-check", async () => {
+    const { fetchMock, respond } = mockPendingFetch();
     let currentValue = INVALID_NUMBER;
 
     const result = validate(renderValidator(), INVALID_NUMBER, {
       getCurrentValue: () => currentValue,
     });
+    await vi.waitFor(() => {
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+    });
     currentValue = VALID_NUMBER;
     respond({ valid: false, message: "Invalid corporation number" }, 404);
+
+    await vi.waitFor(() => {
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+    });
+    expect(fetchMock.mock.calls[1]?.[0]).toContain(VALID_NUMBER);
+    respond({ corporationNumber: VALID_NUMBER, valid: true });
 
     await expect(result).resolves.toBeUndefined();
   });
 
-  it("drops the failure for a value the user has since changed", async () => {
-    const { respond } = mockPendingFetch();
+  it("rejects an edited value the API rejects, even if the original passed", async () => {
+    const { fetchMock, respond } = mockPendingFetch();
     let currentValue = VALID_NUMBER;
 
     const result = validate(renderValidator(), VALID_NUMBER, {
       getCurrentValue: () => currentValue,
     });
+    await vi.waitFor(() => {
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+    });
+    currentValue = INVALID_NUMBER;
+    respond({ corporationNumber: VALID_NUMBER, valid: true });
+
+    await vi.waitFor(() => {
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+    });
+    respond({ valid: false, message: "Invalid corporation number" }, 404);
+
+    await expect(result).resolves.toBe("Invalid corporation number");
+  });
+
+  it("checks the edited value after a failed request", async () => {
+    const { fetchMock, respond } = mockPendingFetch();
+    let currentValue = VALID_NUMBER;
+
+    const result = validate(renderValidator(), VALID_NUMBER, {
+      getCurrentValue: () => currentValue,
+    });
+    await vi.waitFor(() => {
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+    });
     currentValue = INVALID_NUMBER;
     respond({ message: "Internal error" }, 500);
 
-    await expect(result).resolves.toBeUndefined();
+    await vi.waitFor(() => {
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+    });
+    respond({ valid: false, message: "Invalid corporation number" }, 404);
+
+    await expect(result).resolves.toBe("Invalid corporation number");
+  });
+
+  it("returns the format error for a malformed edited value without a request", async () => {
+    const { fetchMock, respond } = mockPendingFetch();
+    let currentValue = VALID_NUMBER;
+
+    const result = validate(renderValidator(), VALID_NUMBER, {
+      getCurrentValue: () => currentValue,
+    });
+    await vi.waitFor(() => {
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+    });
+    currentValue = "12";
+    respond({ corporationNumber: VALID_NUMBER, valid: true });
+
+    await expect(result).resolves.toBe("Corporation number must be 9 digits");
+    expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
   it("cancels the request when a run for a changed value is aborted", async () => {
