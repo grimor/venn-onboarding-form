@@ -102,6 +102,15 @@ describe("OnboardingPage", () => {
     ).toBeTruthy();
   });
 
+  it("allows only digits and a leading + in the phone number", async () => {
+    const user = renderPage();
+    const input = screen.getByLabelText<HTMLInputElement>("Phone Number");
+
+    await user.type(input, "+1 (306) 277-6103+abc");
+
+    expect(input.value).toBe("+13062776103");
+  });
+
   it("blocks submission when the API rejects the corporation number", async () => {
     const user = renderPage();
 

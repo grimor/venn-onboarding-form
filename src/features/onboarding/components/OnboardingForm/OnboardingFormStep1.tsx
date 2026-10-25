@@ -8,6 +8,7 @@ import {
   onboardingStep1Schema,
   type OnboardingStep1Values,
 } from "../../model/onboardingSchema";
+import { sanitizePhone } from "../../model/sanitizePhone";
 
 import styles from "./OnboardingForm.module.css";
 
@@ -80,6 +81,7 @@ export const OnboardingFormStep1 = withForm({
                     label="Phone Number"
                     type="tel"
                     autoComplete="tel"
+                    parseValue={sanitizePhone}
                   />
                 )}
               </form.AppField>

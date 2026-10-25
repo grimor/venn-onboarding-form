@@ -18,9 +18,11 @@ afterEach(() => {
 function TextFieldForm({
   onBlur,
   description,
+  parseValue,
 }: {
   onBlur?: () => void;
   description?: string;
+  parseValue?: (value: string) => string;
 }) {
   const form = useAppForm({ defaultValues: { name: "" } });
 
@@ -38,6 +40,7 @@ function TextFieldForm({
           validatingLabel="Checking name…"
           description={description}
           onBlur={onBlur}
+          parseValue={parseValue}
         />
       )}
     </form.AppField>
@@ -134,5 +137,16 @@ describe("TextField", () => {
 
     expect(onBlur).toHaveBeenCalledTimes(1);
     expect(screen.getByRole("alert").textContent).toBe("Too short");
+  });
+
+  it("stores the value transformed by parseValue", async () => {
+    const user = renderTextField({
+      parseValue: (value) => value.replace(/\d/g, ""),
+    });
+    const input = screen.getByLabelText<HTMLInputElement>("Name");
+
+    await user.type(input, "A1d2a3");
+
+    expect(input.value).toBe("Ada");
   });
 });

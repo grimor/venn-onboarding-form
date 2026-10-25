@@ -16,12 +16,18 @@ type TextFieldProps = Omit<
   label: ReactNode;
   description?: ReactNode;
   validatingLabel?: ReactNode;
+  /**
+   * Transforms the raw input value before it is stored in the field,
+   * e.g. to strip disallowed characters.
+   */
+  parseValue?: (value: string) => string;
 };
 
 export function TextField({
   label,
   description,
   validatingLabel = "Validating…",
+  parseValue,
   onBlur,
   ...inputProps
 }: TextFieldProps) {
@@ -42,7 +48,7 @@ export function TextField({
         {...inputProps}
         value={field.state.value}
         onValueChange={(value) => {
-          field.handleChange(value);
+          field.handleChange(parseValue ? parseValue(value) : value);
         }}
         onBlur={(event) => {
           field.handleBlur();
