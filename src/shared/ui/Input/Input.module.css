@@ -27,4 +27,8 @@
     outline: var(--focus-outline);
     outline-offset: -1px;
   }
+
+  &[data-invalid] {
+    border-color: var(--color-border-input-error);
+  }
 }

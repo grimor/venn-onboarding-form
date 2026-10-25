@@ -15,7 +15,13 @@ afterEach(() => {
   cleanup();
 });
 
-function TextFieldForm({ onBlur }: { onBlur?: () => void }) {
+function TextFieldForm({
+  onBlur,
+  description,
+}: {
+  onBlur?: () => void;
+  description?: string;
+}) {
   const form = useAppForm({ defaultValues: { name: "" } });
 
   return (
@@ -30,6 +36,7 @@ function TextFieldForm({ onBlur }: { onBlur?: () => void }) {
         <field.TextField
           label="Name"
           validatingLabel="Checking name…"
+          description={description}
           onBlur={onBlur}
         />
       )}
@@ -63,6 +70,34 @@ describe("TextField", () => {
     await user.type(input, "a");
     await user.tab();
     expect(screen.queryByRole("alert")).toBeNull();
+  });
+
+  it("marks the input invalid and describes it by the error", async () => {
+    const user = renderTextField();
+    const input = screen.getByLabelText("Name");
+
+    expect(input.getAttribute("aria-invalid")).toBeNull();
+
+    await user.type(input, "Ad");
+    await user.tab();
+
+    const error = screen.getByRole("alert");
+    expect(input.getAttribute("aria-invalid")).toBe("true");
+    expect(input.getAttribute("aria-describedby")).toContain(
+      error.parentElement?.id,
+    );
+
+    await user.type(input, "a");
+    await user.tab();
+    expect(input.getAttribute("aria-invalid")).toBeNull();
+  });
+
+  it("describes the input by its description", () => {
+    renderTextField({ description: "Your full name" });
+
+    expect(
+      screen.getByRole("textbox", { description: "Your full name" }),
+    ).toBeTruthy();
   });
 
   it("shows the validating label while async validation runs", async () => {

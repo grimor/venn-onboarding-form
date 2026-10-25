@@ -6,7 +6,7 @@ export function FormError({ children }: PropsWithChildren) {
   if (!children) return null;
 
   return (
-    <Text role="alert" color="error">
+    <Text role="alert" color="error" size="sm">
       {children}
     </Text>
   );

@@ -32,8 +32,12 @@ export function TextField({
   const errors = isValidating ? [] : getErrorMessages(field.state.meta.errors);
 
   return (
-    <Field.Root className={styles.Field}>
-      <Field.Label className={styles.Label}>{label}</Field.Label>
+    <Field.Root className={styles.Field} invalid={errors.length > 0}>
+      <Field.Label className={styles.Label}>
+        <Text as="span" size="sm">
+          {label}
+        </Text>
+      </Field.Label>
       <Input
         {...inputProps}
         value={field.state.value}

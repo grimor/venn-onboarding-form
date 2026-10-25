@@ -1,6 +1,6 @@
 .text {
   margin: 0;
-  font-family: var(--font-sans);
+  font-family: var(--font-family-base);
 }
 
 /* Size */
