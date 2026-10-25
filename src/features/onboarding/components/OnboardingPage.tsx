@@ -10,9 +10,8 @@ import styles from "./OnboardingPage.module.css";
 export function OnboardingPage() {
   const [step, setStep] = useState(0);
 
-  const handleStepSuccess = (submittedStep: number) => {
-    // TODO: Set new step number after submit success on current step
-    // setStep(Math.min(submittedStep + 1, ONBOARDING_STEPS_COUNT - 1));
+  const handleStepChange = (submittedStep: number) => {
+    setStep(submittedStep);
   };
 
   return (
@@ -28,7 +27,7 @@ export function OnboardingPage() {
             <Text size="xl">Onboarding Form</Text>
           </Card.Header>
           <Card.Content className={styles.FormCardContent}>
-            <OnboardingForm step={step} onStepSuccess={handleStepSuccess} />
+            <OnboardingForm step={step} onStepChange={handleStepChange} />
           </Card.Content>
         </Card.Root>
       </div>

@@ -55,6 +55,7 @@ export const OnboardingFormStep1 = withForm({
                     <field.TextField
                       label="First Name"
                       autoComplete="given-name"
+                      maxLength={50}
                     />
                   )}
                 </form.AppField>
@@ -67,6 +68,7 @@ export const OnboardingFormStep1 = withForm({
                     <field.TextField
                       label="Last Name"
                       autoComplete="family-name"
+                      maxLength={50}
                     />
                   )}
                 </form.AppField>

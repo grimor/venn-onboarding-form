@@ -1,13 +1,16 @@
+import { Button } from "../../../../shared/ui/Button";
 import { useOnboardingForm } from "../../hooks/useOnboardingForm";
 import { OnboardingFormStep1 } from "./OnboardingFormStep1";
 
 interface OnboardingFormProps {
   step: number;
-  onStepSuccess?: (step: number) => void;
+  onStepChange?: (step: number) => void;
 }
 
-export function OnboardingForm({ step, onStepSuccess }: OnboardingFormProps) {
-  const { form, submitStep1, step1SubmitError } = useOnboardingForm({ onStepSuccess });
+export function OnboardingForm({ step, onStepChange }: OnboardingFormProps) {
+  const { form, submitStep1, step1SubmitError } = useOnboardingForm({
+    onStepChange,
+  });
 
   return (
     <>
@@ -17,6 +20,15 @@ export function OnboardingForm({ step, onStepSuccess }: OnboardingFormProps) {
           onSubmit={submitStep1}
           submitError={step1SubmitError}
         />
+      )}
+      {step === 1 && (
+        <Button
+          onClick={() => {
+            onStepChange?.(0);
+          }}
+        >
+          Go Back
+        </Button>
       )}
     </>
   );

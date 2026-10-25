@@ -7,8 +7,8 @@ import { useAppForm } from "../../../shared/form/useAppForm";
 import { getApiErrorMessage } from "../../../shared/api";
 
 export function useOnboardingForm({
-  onStepSuccess,
-}: { onStepSuccess?: (step: number) => void } = {}) {
+  onStepChange,
+}: { onStepChange?: (step: number) => void } = {}) {
   const form = useAppForm({
     ...onboardingFormOptions,
     onSubmit: ({ value }) => {
@@ -19,7 +19,7 @@ export function useOnboardingForm({
   const profileDetailsMutation = useMutation({
     ...profileDetailsMutationOptions(),
     onSuccess: () => {
-      onStepSuccess?.(0);
+      onStepChange?.(1);
     },
   });
 
