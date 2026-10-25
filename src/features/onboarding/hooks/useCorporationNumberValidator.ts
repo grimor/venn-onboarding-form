@@ -1,7 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 
 import { corporationNumberQueryOptions } from "../api/corporationNumber";
-import { onboardingStep1Schema } from "../model/onboardingSchema";
+import { corporationNumberSchema } from "../model/onboardingSchema";
 
 export const CORPORATION_NUMBER_UNVERIFIED_ERROR =
   "We couldn't verify the corporation number. Please try again.";
@@ -33,8 +33,7 @@ export function useCorporationNumberValidator() {
   }: ValidateCorporationNumberParams) => {
     const check = async (checkedValue: string): Promise<string | undefined> => {
       // The edited value hasn't been through the field's sync validator yet.
-      const format =
-        onboardingStep1Schema.shape.corporationNumber.safeParse(checkedValue);
+      const format = corporationNumberSchema.safeParse(checkedValue);
       if (!format.success) return format.error.issues[0]?.message;
 
       const options = corporationNumberQueryOptions(checkedValue);

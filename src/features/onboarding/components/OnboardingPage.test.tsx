@@ -343,4 +343,26 @@ describe("OnboardingPage", () => {
     expect(await screen.findByText("Invalid phone number")).toBeTruthy();
     expect(screen.getByText("Step 1 of 5")).toBeTruthy();
   });
+
+  it("hides the server error once the form is edited, until the next submit", async () => {
+    server.use(
+      http.post(`${env.apiBaseUrl}/profile-details`, () =>
+        HttpResponse.json({ message: "Invalid phone number" }, { status: 400 }),
+      ),
+    );
+    const user = renderPage();
+
+    await fillStep1(user, validValues);
+    await user.click(screen.getByRole("button", { name: /submit/i }));
+    expect(await screen.findByText("Invalid phone number")).toBeTruthy();
+
+    await user.type(screen.getByLabelText("Phone Number"), "{Backspace}4");
+    expect(screen.queryByText("Invalid phone number")).toBeNull();
+
+    await user.type(screen.getByLabelText("Phone Number"), "{Backspace}3");
+    expect(screen.queryByText("Invalid phone number")).toBeNull();
+
+    await user.click(screen.getByRole("button", { name: /submit/i }));
+    expect(await screen.findByText("Invalid phone number")).toBeTruthy();
+  });
 });
